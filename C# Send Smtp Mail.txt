@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Mail;
+
+namespace SendSMTP
+{
+    public class SmtpMail
+    {
+        public static string sendSmtpMail(string body,string FromMailAddress,string ToMailAddress,string subject,string host,string password,bool isBodyHtml,int port)
+        {
+            string Success = null;
+            try
+            {
+                MailMessage message = new MailMessage();
+                SmtpClient smtp = new SmtpClient();
+                message.From = new MailAddress(FromMailAddress);
+                message.To.Add(new MailAddress(ToMailAddress));
+                message.Subject = subject;
+                message.IsBodyHtml = isBodyHtml; //to make message body as html  
+                message.Body = body;
+                smtp.Port = port;
+                smtp.Host = host; //for gmail host  
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential(FromMailAddress, password);
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.Send(message);
+                Success = "True";
+                return Success;
+            }
+            catch (Exception e)
+            {
+                Success = "False";
+                return Success + " " +e.Message;
+            }
+        }
+    }
+}
